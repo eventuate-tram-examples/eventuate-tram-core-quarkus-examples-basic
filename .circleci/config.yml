@@ -1,0 +1,26 @@
+version: 2
+jobs:
+  build:
+    machine: true
+    working_directory: ~/eventuate-tram-core-quarkus-examples-basic
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - eventuate-tram-core-quarkus-examples-basic-{{ checksum "gradle.properties" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+            - eventuate-tram-core-quarkus-examples-basic-
+      - run: TERM=dumb ./gradlew testClasses
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: eventuate-tram-core-quarkus-examples-basic-{{ checksum "gradle.properties" }}-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - run: TERM=dumb ./build-and-test-all-mysql-binlog-kafka.sh
+      - run:
+          name: Save test results
+          command: |
+            TERM=dumb ./.circleci/save-containers-and-tests.sh
+          when: always
+      - store_test_results:
+          path: ~/junit
+      - store_artifacts:
+          path: ~/junit

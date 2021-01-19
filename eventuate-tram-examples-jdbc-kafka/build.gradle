@@ -1,0 +1,22 @@
+plugins {
+    id "io.quarkus" version "${quarkusVersion}"
+    id 'org.kordamp.gradle.jandex' version '0.6.0'
+}
+
+dependencies {
+    testCompile project(":eventuate-tram-examples-common")
+
+    testCompile "io.eventuate.tram.core:eventuate-tram-quarkus-consumer-kafka:$eventuateTramQuarkusVersion"
+
+    testCompile "io.quarkus:quarkus-jdbc-mysql"
+
+    testCompile 'io.quarkus:quarkus-junit5'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+test {
+    forkEvery 1
+}
